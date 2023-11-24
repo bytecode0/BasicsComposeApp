@@ -146,7 +146,7 @@ fun Greeting(
                 if (expanded.value) {
                     Box {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                            painter = painterResource(id = R.drawable.ic_jetpack_compose_icon),
                             contentDescription = "Launcher Background",
                             modifier = Modifier.fillMaxWidth(),
                             contentScale = ContentScale.FillWidth
