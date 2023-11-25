@@ -3,7 +3,9 @@ package com.mobileinsights.basicscomposeapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobileinsights.basicscomposeapp.ui.theme.BasicsComposeAppTheme
@@ -104,35 +108,47 @@ fun GreetingsScreen() {
 @Composable
 fun Greeting(
     name: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isExpanded: Boolean = false
 ) {
-    val expanded = remember { mutableStateOf(false) }
-
-    val extraPadding = if (expanded.value) 48.dp else 0.dp
+    val expanded = remember { mutableStateOf(isExpanded) }
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-        ) {
-            Column(
+        Column {
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(bottom = extraPadding)
+                    .fillMaxWidth()
+                    .padding(24.dp)
             ) {
-                Text(text = "Welcome, ")
-                Text(text = name)
-            }
-            ElevatedButton(
-                onClick = {
-                    expanded.value = !expanded.value
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    Text(text = "Welcome, ")
+                    Text(text = name)
                 }
-            ) {
-                Text(text = if (expanded.value) "Show less" else "Show more")
+                ElevatedButton(
+                    onClick = {
+                        expanded.value = !expanded.value
+                    }
+                ) {
+                    Text(text = if (expanded.value) "Show less" else "Show more")
+                }
+            }
+            if (expanded.value) {
+                Row {
+                    Box {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                            contentDescription = "Image",
+                            modifier = Modifier.fillMaxWidth(),
+                            contentScale = ContentScale.FillWidth
+                        )
+                    }
+                }
             }
         }
 
@@ -160,5 +176,16 @@ fun GreetingsScreenPreview() {
 fun GreetingPreview() {
     BasicsComposeAppTheme {
         Greeting(name = "Bussiness Manager")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ExpandedGreetingPreview() {
+    BasicsComposeAppTheme {
+        Greeting(
+            name = "Bussiness Manager",
+            isExpanded = true
+        )
     }
 }
