@@ -142,7 +142,7 @@ fun Greeting(
                 Row {
                     Box {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                            painter = painterResource(id = R.drawable.ic_jetpack_compose),
                             contentDescription = "Image",
                             modifier = Modifier.fillMaxWidth(),
                             contentScale = ContentScale.FillWidth
