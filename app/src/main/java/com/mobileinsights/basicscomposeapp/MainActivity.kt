@@ -19,8 +19,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -50,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyApp()
+                    MyApp(modifier = Modifier.fillMaxSize())
                 }
             }
         }
@@ -58,10 +64,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(
+    modifier: Modifier = Modifier
+) {
     var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     Surface(
+        modifier,
         color = MaterialTheme.colorScheme.background
     ) {
         if (shouldShowOnboarding) {
@@ -106,8 +115,8 @@ fun GreetingScreen(
         LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
             items(items = names) { name ->
                 Greeting(
-                    name = name,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+                    name = name
                 )
             }
         }
@@ -120,55 +129,68 @@ fun Greeting(
     name: String,
     isExpanded: Boolean = false,
 ) {
-    val expanded = rememberSaveable { mutableStateOf(isExpanded) }
-
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
+    Card (
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
         modifier = modifier
     ) {
-        Column(
+        CardContent(name, isExpanded)
+    }
+}
+
+@Composable
+fun CardContent(
+    name: String,
+    isExpanded: Boolean = false
+) {
+    val expanded = rememberSaveable { mutableStateOf(isExpanded) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(24.dp)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
+                    .weight(1f)
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Text(text = "Welcome, ", style = MaterialTheme.typography.titleLarge)
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold)
-                    )
-                }
-                ElevatedButton(
-                    onClick = {
-                        expanded.value = !expanded.value
-                    }
-                ) {
-                    Text(text = if (expanded.value) "Show less" else "Show more")
-                }
+                Text(text = "Welcome, ", style = MaterialTheme.typography.titleLarge)
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold)
+                )
             }
-            AnimatedVisibility(
-                visible = expanded.value,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
+            IconButton(
+                onClick = {
+                    expanded.value = !expanded.value
+                }
             ) {
-                Box {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_jetpack_compose),
-                        contentDescription = "Launcher Background",
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth
-                    )
+                if (expanded.value) {
+                    Icon(Icons.Filled.ExpandLess, contentDescription = "ExpandLess")
+                } else {
+                    Icon(Icons.Filled.ExpandMore, contentDescription = "ExpandMore")
                 }
             }
         }
-
+        AnimatedVisibility(
+            visible = expanded.value,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Box {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_jetpack_compose),
+                    contentDescription = "Launcher Background",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+        }
     }
 }
 
