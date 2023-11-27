@@ -1,5 +1,6 @@
 package com.mobileinsights.basicscomposeapp
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobileinsights.basicscomposeapp.ui.theme.BasicsComposeAppTheme
@@ -40,7 +42,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BasicsComposeAppTheme {
+            BasicsComposeAppTheme(
+                dynamicColor = false
+            ) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -135,8 +139,11 @@ fun Greeting(
                     modifier = Modifier
                         .weight(1f)
                 ) {
-                    Text(text = "Welcome, ")
-                    Text(text = name)
+                    Text(text = "Welcome, ", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold)
+                    )
                 }
                 ElevatedButton(
                     onClick = {
@@ -191,6 +198,19 @@ fun ExpandedGreetingPreview() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingScreenPreview() {
+    BasicsComposeAppTheme {
+        GreetingScreen()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "Dark"
+)
+@Composable
+fun GreetingScreenDarkPreview() {
     BasicsComposeAppTheme {
         GreetingScreen()
     }
