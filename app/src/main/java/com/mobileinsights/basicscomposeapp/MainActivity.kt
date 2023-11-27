@@ -3,6 +3,12 @@ package com.mobileinsights.basicscomposeapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -108,11 +115,11 @@ fun GreetingScreen(
 
 @Composable
 fun Greeting(
+    modifier: Modifier = Modifier,
     name: String,
     isExpanded: Boolean = false,
-    modifier: Modifier = Modifier
 ) {
-    val expanded = remember { mutableStateOf(isExpanded) }
+    val expanded = rememberSaveable { mutableStateOf(isExpanded) }
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
@@ -142,16 +149,18 @@ fun Greeting(
                     Text(text = if (expanded.value) "Show less" else "Show more")
                 }
             }
-            Row {
-                if (expanded.value) {
-                    Box {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_jetpack_compose),
-                            contentDescription = "Launcher Background",
-                            modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.FillWidth
-                        )
-                    }
+            AnimatedVisibility(
+                visible = expanded.value,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Box {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_jetpack_compose),
+                        contentDescription = "Launcher Background",
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
+                    )
                 }
             }
         }
