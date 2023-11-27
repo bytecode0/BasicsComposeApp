@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -80,7 +83,7 @@ fun MyApp(
                 }
             )
         } else {
-            GreetingScreen()
+            GreetingGridScreen()
         }
     }
 }
@@ -109,15 +112,33 @@ fun GreetingScreen(
     modifier: Modifier = Modifier,
     names: List<String> = List(1000) { "$it" }
 ) {
-    Surface(
-        color = MaterialTheme.colorScheme.background
+    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
+        items(items = names) { name ->
+            Greeting(
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+                name = name
+            )
+        }
+    }
+}
+
+
+@Composable
+fun GreetingGridScreen(
+    modifier: Modifier = Modifier,
+    names: List<String> = List(1000) { "$it" }
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2)
     ) {
-        LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
-            items(items = names) { name ->
-                Greeting(
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
-                    name = name
-                )
+        items(names) {
+            Card (
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = modifier.padding(8.dp)
+            ) {
+                CardContent(name = it)
             }
         }
     }
@@ -133,14 +154,14 @@ fun Greeting(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
-        modifier = modifier
+        modifier = modifier.padding(8.dp)
     ) {
-        CardContent(name, isExpanded)
+        ExpandableCardContent(name, isExpanded)
     }
 }
 
 @Composable
-fun CardContent(
+fun ExpandableCardContent(
     name: String,
     isExpanded: Boolean = false
 ) {
@@ -194,6 +215,28 @@ fun CardContent(
     }
 }
 
+@Composable
+fun CardContent(
+    name: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = name,
+            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_jetpack_compose),
+            contentDescription = "Launcher Background",
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
@@ -235,6 +278,27 @@ fun GreetingScreenPreview() {
 fun GreetingScreenDarkPreview() {
     BasicsComposeAppTheme {
         GreetingScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingGridScreenPreview() {
+    BasicsComposeAppTheme {
+        GreetingGridScreen()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "Dark"
+)
+@Composable
+fun GreetingGridScreenDarkPreview() {
+    BasicsComposeAppTheme {
+        GreetingGridScreen()
     }
 }
 
