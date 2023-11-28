@@ -28,11 +28,19 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -83,9 +91,71 @@ fun MyApp(
                 }
             )
         } else {
-            GreetingGridScreen()
+            DashboardScreen()
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DashboardScreen(
+    tabSelected: Int = 0
+) {
+    var selectedTabIndex by rememberSaveable { mutableStateOf(tabSelected) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Basics Compose App",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                colors = TopAppBarDefaults
+                    .centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+            )
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues)
+            ) {
+                TabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    indicator = { tabPositions ->
+                        TabRowDefaults.Indicator(
+                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    listOf("List", "Gallery").forEachIndexed { index, title ->
+                        Tab(
+                            text = {
+                                Text(text = title)
+                            },
+                            selected = index == selectedTabIndex,
+                            onClick = {
+                                selectedTabIndex = index
+                            }
+                        )
+                    }
+                }
+
+                when (selectedTabIndex) {
+                    0 -> GreetingScreen()
+                    1 -> GreetingGridScreen()
+                }
+            }
+        }
+    )
 }
 
 @Composable
@@ -239,6 +309,34 @@ fun CardContent(
 
 @Preview(showBackground = true)
 @Composable
+fun OnboardingScreenPreview() {
+    BasicsComposeAppTheme {
+        OnboardingScreen(
+            onContinueClicked = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DashboardFirstTabSelectedPreview() {
+    BasicsComposeAppTheme {
+        DashboardScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DashboardSecondTabSelectedPreview() {
+    BasicsComposeAppTheme {
+        DashboardScreen(
+            tabSelected = 1
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 fun GreetingPreview() {
     BasicsComposeAppTheme {
         Greeting(
@@ -268,19 +366,6 @@ fun GreetingScreenPreview() {
     }
 }
 
-@Preview(
-    showBackground = true,
-    widthDp = 320,
-    uiMode = UI_MODE_NIGHT_YES,
-    name = "Dark"
-)
-@Composable
-fun GreetingScreenDarkPreview() {
-    BasicsComposeAppTheme {
-        GreetingScreen()
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingGridScreenPreview() {
@@ -296,18 +381,34 @@ fun GreetingGridScreenPreview() {
     name = "Dark"
 )
 @Composable
-fun GreetingGridScreenDarkPreview() {
+fun DashboardFirstTabSelectedDarkPreview() {
     BasicsComposeAppTheme {
-        GreetingGridScreen()
+        DashboardScreen()
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "Dark"
+)
 @Composable
-fun OnboardingScreenPreview() {
+fun GreetingScreenDarkPreview() {
     BasicsComposeAppTheme {
-        OnboardingScreen(
-            onContinueClicked = {}
-        )
+        GreetingScreen()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "Dark"
+)
+@Composable
+fun GreetingGridScreenDarkPreview() {
+    BasicsComposeAppTheme {
+        GreetingGridScreen()
     }
 }
