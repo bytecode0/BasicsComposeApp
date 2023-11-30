@@ -5,12 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -50,6 +52,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -213,16 +216,77 @@ fun OnboardingScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GreetingScreen(
     modifier: Modifier = Modifier,
-    names: List<String> = List(1000) { "$it" }
+    assets: List<Asset> = List(20) { Asset(name = "$it") }
 ) {
-    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
-        items(items = names) { name ->
-            Greeting(
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
-                name = name
+    // The LazyListState supports the scroll position via
+    val listState = rememberLazyListState()
+
+    // Remember a CoroutineScope to be able to launch
+    val coroutineScope = rememberCoroutineScope()
+
+    val assetsState = remember { mutableStateOf(listOf<Asset>()) }
+
+    LaunchedEffect(key1 = true) {
+        assetsState.value = assets
+    }
+
+    Column {
+        HorizontalFilters { filterSelected ->
+            when (filterSelected) {
+                0 -> assetsState.value = assets.sortedBy { it.name.toInt() }
+                1 -> assetsState.value = assets.sortedByDescending { it.name.toInt() }
+                2 -> assetsState.value = assets.shuffled()
+            }
+        }
+        LazyColumn(
+            modifier = modifier.padding(vertical = 4.dp),
+            state = listState
+        ) {
+            items(items = assetsState.value, key = { it.name }) { asset ->
+                Greeting(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                        .animateItemPlacement(
+                            tween(1000, easing = LinearEasing)
+                        ),
+                    name = asset.name
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun HorizontalFilters(
+    onFilterSelected: (Int) -> Unit
+) {
+    var selectedFilterIndex by rememberSaveable { mutableStateOf(0) }
+    TabRow(
+        selectedTabIndex = selectedFilterIndex,
+        containerColor = MaterialTheme.colorScheme.primary,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedFilterIndex]),
+                color = MaterialTheme.colorScheme.secondary
+            )
+        },
+        contentColor = MaterialTheme.colorScheme.onPrimary
+    ) {
+        listOf("Ascending", "Descending", "Shuffle").forEachIndexed { index, title ->
+            Tab(
+                text = {
+                    Text(text = title)
+                },
+                selected = index == selectedFilterIndex,
+                onClick = {
+                    selectedFilterIndex = index
+                    onFilterSelected(index)
+                }
             )
         }
     }
