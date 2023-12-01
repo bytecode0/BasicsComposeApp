@@ -1,9 +1,12 @@
 package com.mobileinsights.basicscomposeapp.composables
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.animateSizeAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
@@ -97,6 +102,7 @@ fun IntegerAnimatedScreen() {
 @Composable
 fun SizeAnimatedScreen() {
     var expanded by remember { mutableStateOf(false) }
+    var isHighlighted by remember { mutableStateOf(false) }
 
     val sizeState by animateSizeAsState(
         if (expanded) {
@@ -108,14 +114,32 @@ fun SizeAnimatedScreen() {
         label = "size animation"
     )
 
+    val backgroundColor by animateColorAsState(
+        if (isHighlighted) { Color.Red } else { Color.Blue },
+        animationSpec = spring(),
+        label = "background color animation"
+    )
+
+    val cornerRadius by animateDpAsState(
+        targetValue = if (isHighlighted) 300.dp else 0.dp,
+        animationSpec = spring(),
+        label = "corner radius animation"
+    )
+
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
                 .size(sizeState.width.dp, sizeState.height.dp)
-                .background(Color.Blue)
-                .clickable { expanded = !expanded }
+                .clip(RoundedCornerShape(cornerRadius.value))
+                .background(backgroundColor)
+                .clickable {
+                    expanded = !expanded
+                    isHighlighted = expanded
+                }
                 .padding(16.dp)
         ) {
             // Content goes here
