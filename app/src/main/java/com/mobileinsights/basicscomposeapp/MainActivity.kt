@@ -32,7 +32,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,14 +57,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mobileinsights.basicscomposeapp.composables.WatterBottle
 import com.mobileinsights.basicscomposeapp.ui.theme.BasicsComposeAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -80,43 +77,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    WatterBottleScreen()
-                    // MyApp(modifier = Modifier.fillMaxSize())
+                    MyApp(modifier = Modifier.fillMaxSize())
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun WatterBottleScreen() {
-    var usedWaterAmount by remember {
-        mutableStateOf(100)
-    }
-    val totalWaterAmount = remember {
-        2500
-    }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        WatterBottle(
-            totalWaterAmount = totalWaterAmount,
-            unit = "ml",
-            usedWaterAmount = usedWaterAmount
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Total Amount is : $totalWaterAmount",
-            textAlign = TextAlign.Center
-        )
-        Button(
-            onClick = { usedWaterAmount += 200 },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xff279EFF))
-        ) {
-            Text(text = "Drink")
         }
     }
 }
