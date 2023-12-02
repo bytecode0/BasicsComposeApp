@@ -63,8 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mobileinsights.basicscomposeapp.composables.SizeAnimatedScreen
-import com.mobileinsights.basicscomposeapp.composables.TypeWriterScreen
+import com.mobileinsights.basicscomposeapp.composables.AnimationMenuScreen
 import com.mobileinsights.basicscomposeapp.ui.theme.BasicsComposeAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -79,10 +78,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    /*TypeWriterScreen(text = "Lorem ipsum dolor sit amet consectetur adipiscing elit primis enim, vulputate pretium sodales varius mi condimentum ante id vehicula, rhoncus metus sed aptent facilisis torquent aliquet arcu. Nisi himenaeos lacinia augue accumsan arcu taciti cursus ullamcorper enim tincidunt per, dapibus convallis pharetra varius etiam posuere et id dis nulla sociosqu habitasse, massa at sed donec ornare a natoque neque nunc scelerisque. Blandit feugiat leo ligula viverra congue sapien platea sollicitudin quis, montes cursus iaculis ante nunc senectus potenti.\n" +
-                            "\n" +
-                            "In suspendisse nullam justo et lobortis congue vulputate, primis inceptos himenaeos augue turpis consequat conubia, cursus iaculis fames malesuada leo quam. Quis molestie tincidunt torquent commodo aptent nec nisl scelerisque pretium conubia, est enim purus litora hendrerit vestibulum a varius malesuada, sapien laoreet himenaeos praesent nam mi inceptos suspendisse fames. Fusce maecenas montes nunc tellus velit parturient laoreet nulla ut nullam, netus taciti himenaeos senectus interdum potenti blandit a.")*/
-                    SizeAnimatedScreen()
+                    AnimationMenuScreen()
                     //MyApp(modifier = Modifier.fillMaxSize())
                 }
             }
